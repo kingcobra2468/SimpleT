@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Thermometer</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="username"></string>
+    <string name="password"></string>
+    <string name="api_url"></string>
+    <string name="rasp_pi_hash"></string>
+    <string name="unit">Fahrenheit</string>
+    <string name="api_mode">Public</string>
+
+</resources>
