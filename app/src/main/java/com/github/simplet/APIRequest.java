@@ -1,26 +1,21 @@
-package com.tyryshkin.thermometer;
-
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import java.util.Map;
-import java.net.HttpURLConnection;
-import java.util.Base64;
+package com.github.simplet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Map;
 
 public class APIRequest {
 
@@ -29,9 +24,10 @@ public class APIRequest {
     private String username = "";
     private String password = "";
 
-    public APIRequest() {}
+    public APIRequest() {
+    }
 
-    public void setUrl(String url) throws MalformedURLException {
+    public void setUrl(String url) {
 
         this.rest_base_url = url;
     }
@@ -46,7 +42,7 @@ public class APIRequest {
         this.password = password;
     }
 
-    private String encode_credentials(String username, String password) throws UnsupportedEncodingException {
+    private String encode_credentials(String username, String password) {
         String credentials = username + ":" + password;
         return android.util.Base64.encodeToString(credentials.getBytes(), android.util.Base64.DEFAULT);
     }
@@ -56,7 +52,7 @@ public class APIRequest {
         return this.rest_base_url;
     }
 
-    public Object sendRequest(String method, String apiMethod, Object data, boolean attachmentFlag) throws MalformedURLException, IOException, JSONException, RequestException {
+    public Object sendRequest(String method, String apiMethod, Object data, boolean attachmentFlag) throws IOException, JSONException, RequestException {
 
         String url = this.rest_base_url + apiMethod;
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
@@ -64,16 +60,16 @@ public class APIRequest {
 
         conn.addRequestProperty("Authorization", "BASIC " + this.encode_credentials(this.username, this.password));
 
-        if (method.equalsIgnoreCase("POST") || method.equalsIgnoreCase("PUT") ) {
+        if (method.equalsIgnoreCase("POST") || method.equalsIgnoreCase("PUT")) {
 
-            // For attachments in Testrail
+
             conn.setRequestMethod(method.toUpperCase());
 
 
             if (attachmentFlag)   // add_attachment API requests
             {
                 String boundary = "a"; //Can be any random string
-                File uploadFile = new File((String)data);
+                File uploadFile = new File((String) data);
 
                 conn.setDoOutput(true);
                 conn.addRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
@@ -92,8 +88,7 @@ public class APIRequest {
                 int bytesRead;
                 byte[] dataBuffer = new byte[1024];
 
-                while ((bytesRead = istreamFile.read(dataBuffer)) != -1)
-                {
+                while ((bytesRead = istreamFile.read(dataBuffer)) != -1) {
                     ostreamBody.write(dataBuffer, 0, bytesRead);
                 }
 
@@ -107,20 +102,17 @@ public class APIRequest {
                 istreamFile.close();
                 ostreamBody.close();
                 bodyWriter.close();
-            }
-
-            else {
+            } else {
                 conn.addRequestProperty("Content-Type", "application/json");
 
-                byte[] block = new JSONObject((Map)data).toString().getBytes("UTF-8");
+                byte[] block = new JSONObject((Map) data).toString().getBytes("UTF-8");
 
                 conn.setDoOutput(true);
                 OutputStream ostream = conn.getOutputStream();
                 ostream.write(block);
                 ostream.close();
             }
-        }
-        else if (method.equalsIgnoreCase("GET") ) {
+        } else if (method.equalsIgnoreCase("GET")) {
 
             conn.setRequestMethod(method.toUpperCase());
             conn.addRequestProperty("Content-Type", "application/json");
@@ -135,13 +127,11 @@ public class APIRequest {
             response = conn.getErrorStream();
 
             String text = "";
-            if (response != null)
-            {
-                BufferedReader reader = new BufferedReader( new InputStreamReader(response, "UTF-8"));
+            if (response != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(response, "UTF-8"));
 
                 String line;
-                while ((line = reader.readLine()) != null)
-                {
+                while ((line = reader.readLine()) != null) {
                     text += line;
                     text += System.getProperty("line.separator");
                 }
@@ -152,34 +142,27 @@ public class APIRequest {
             System.out.println("Statusera " + text);
             Object result;
 
-            if (text != "")
-            {
+            if (text != "") {
 
                 result = new JSONTokener(text).nextValue();
 
-            }
-            else
-            {
+            } else {
                 result = new JSONObject();
             }
 
-            System.out.println("Statusera " + returnStatus + " On API Call: " + this.rest_base_url +apiMethod + "\nServer Msg: " + ((JSONObject)result).getString("error"));
+            System.out.println("Statusera " + returnStatus + " On API Call: " + this.rest_base_url + apiMethod + "\nServer Msg: " + ((JSONObject) result).getString("error"));
 
-            throw new RequestException(((JSONObject)result).getString("error"));
-        }
-
-        else {
+            throw new RequestException(((JSONObject) result).getString("error"));
+        } else {
 
             response = conn.getInputStream();
 
             String text = "";
-            if (response != null)
-            {
-                BufferedReader reader = new BufferedReader( new InputStreamReader(response, "UTF-8"));
+            if (response != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(response, "UTF-8"));
 
                 String line;
-                while ((line = reader.readLine()) != null)
-                {
+                while ((line = reader.readLine()) != null) {
                     text += line;
                     text += System.getProperty("line.separator");
                 }
@@ -189,14 +172,11 @@ public class APIRequest {
 
             Object result;
 
-            if (text != "")
-            {
+            if (text != "") {
 
                 result = new JSONTokener(text).nextValue();
 
-            }
-            else
-            {
+            } else {
                 result = new JSONObject();
             }
 
@@ -204,7 +184,6 @@ public class APIRequest {
 
         }
     }
-
 
 
 }

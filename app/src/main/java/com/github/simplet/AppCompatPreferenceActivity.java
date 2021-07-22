@@ -1,4 +1,4 @@
-package com.tyryshkin.thermometer;
+package com.github.simplet;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
