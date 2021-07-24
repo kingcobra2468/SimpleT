@@ -1,4 +1,4 @@
-package com.github.simplet;
+package com.github.simplet.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -9,9 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import org.json.JSONObject;
+import com.github.simplet.network.APIRequest;
+import com.github.simplet.utils.LocalStorage;
 
-import java.net.MalformedURLException;
+import org.json.JSONObject;
 
 // TODO: add support so it stops and resume when page is not on top of stack
 
@@ -31,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
         myTextView = findViewById(com.github.simplet.R.id.temp);
 
         Toolbar myToolbar = findViewById(com.github.simplet.R.id.my_toolbar);
-        myToolbar.setBackgroundColor(getResources().getColor(com.github.simplet.R.color.colorPrimary));
+        myToolbar.setBackgroundColor(getResources().getColor(com.github.simplet.R.color
+                .colorPrimary));
         setSupportActionBar(myToolbar);
     }
 
@@ -44,15 +46,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
-
             case com.github.simplet.R.id.action_favorite:
-                Intent myIntent = new Intent(MainActivity.this, Setting.class);
+                Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 //myIntent.putExtra("key", value); //Optional parameters
                 MainActivity.this.startActivity(myIntent);
                 return true;
-
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -62,30 +61,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-
         super.onStart();
+
         temp_refresh = new MyTask().execute();
     }
 
     @Override
     protected void onPause() {
-
         super.onPause();
+
         temp_refresh.cancel(true);
     }
 
     private class MyTask extends AsyncTask<String, String, String> {
-
         private APIRequest api_request = new APIRequest();
         private String username, password, apiUrl, units, raspHash, apiMode;
         private int refreshSec;
 
-        private void getLatestData() throws MalformedURLException {
-
-            System.out.println("abczy " + this.apiUrl);
+        private void getLatestData() {
             this.username = LocalStorage.getString(com.github.simplet.R.string.username, "");
             this.password = LocalStorage.getString(com.github.simplet.R.string.password, "");
-            this.apiUrl = LocalStorage.getString(com.github.simplet.R.string.api_url, "http:127.0.1.1/");
+            this.apiUrl = LocalStorage.getString(com.github.simplet.R.string.api_url,
+                    "http:127.0.1.1/");
             this.units = LocalStorage.getString(com.github.simplet.R.string.unit, "celcius");
             this.refreshSec = LocalStorage.getInt(com.github.simplet.R.integer.refresh, 5);
             this.raspHash = LocalStorage.getString(com.github.simplet.R.string.rasp_pi_hash, "");
@@ -98,18 +95,14 @@ public class MainActivity extends AppCompatActivity {
             //Update each time or do a check. Check might be slower
             this.api_request.setUsername(this.username);
             this.api_request.setPassword(this.password);
-
-
         }
 
         @Override
         protected void onPreExecute() {
-
         }
 
         @Override
         protected String doInBackground(String... params) {
-
             String apiCall = "";
             try {
 
@@ -120,12 +113,13 @@ public class MainActivity extends AppCompatActivity {
                     if (this.apiMode.equalsIgnoreCase("public")) {
                         apiCall = "temperature/" + this.units.toLowerCase();
                     } else if (this.apiMode.equalsIgnoreCase("private")) {
-                        apiCall = "temp/get-temperature/" + this.raspHash + "/" + this.units.toLowerCase();
-                        System.out.println("abczyE " + this.apiUrl + apiCall);
+                        apiCall = "temp/get-temperature/" + this.raspHash + "/" + this.units
+                                .toLowerCase();
                     }
 
                     try {
-                        JSONObject responseData = (JSONObject) this.api_request.sendRequest("GET", apiCall, null, false);
+                        JSONObject responseData = (JSONObject) this.api_request.sendRequest
+                                ("GET", apiCall, null, false);
                         Double temperature = responseData.getDouble("temperature");
                         String units = responseData.getString("unit");
                         publishProgress(temperature.toString() + " " + units);
@@ -160,5 +154,4 @@ public class MainActivity extends AppCompatActivity {
             myTextView.setText(result);
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package com.github.simplet;
+package com.github.simplet.network.exceptions;
 
 public class RequestException extends Exception {
 
