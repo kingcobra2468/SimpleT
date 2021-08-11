@@ -4,43 +4,60 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.github.simplet.R;
+import com.github.simplet.adapters.RpistAdapter;
 import com.github.simplet.network.APIRequest;
 import com.github.simplet.utils.LocalStorage;
 
 import org.json.JSONObject;
 
-// TODO: add support so it stops and resume when page is not on top of stack
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-    private TextView myTextView;
-    private LocalStorage localStorage;
-    private AsyncTask temp_refresh;
+    //private LocalStorage localStorage;
+    private List<Integer> mRpistList = new ArrayList<>();
+    private RecyclerView mRecyclerView;
+    private RpistAdapter mRpistAdapter;
+    // private AsyncTask temp_refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(com.github.simplet.R.layout.activity_main);
-        LocalStorage.setContext(this);
 
-        myTextView = findViewById(com.github.simplet.R.id.temp);
+        mRpistList.add(1);
+        mRpistList.add(2);
+        mRpistList.add(1);
+        setContentView(R.layout.activity_main);
 
         Toolbar myToolbar = findViewById(com.github.simplet.R.id.my_toolbar);
-        myToolbar.setBackgroundColor(getResources().getColor(com.github.simplet.R.color
-                .colorPrimary));
+        myToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         setSupportActionBar(myToolbar);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.rpist_recycle_view);
+        mRpistAdapter = new RpistAdapter(this, mRpistList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mRecyclerView.addItemDecoration(
+                new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        mRecyclerView.setAdapter(mRpistAdapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(com.github.simplet.R.menu.header_home, menu);
+        getMenuInflater().inflate(R.menu.header_home, menu);
         return true;
     }
 
@@ -63,16 +80,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        temp_refresh = new MyTask().execute();
+      //  temp_refresh = new MyTask().execute();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        temp_refresh.cancel(true);
+   //     temp_refresh.cancel(true);
     }
-
+    /*
     private class MyTask extends AsyncTask<String, String, String> {
         private APIRequest api_request = new APIRequest();
         private String username, password, apiUrl, units, raspHash, apiMode;
@@ -153,5 +170,5 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             myTextView.setText(result);
         }
-    }
+    }*/
 }
