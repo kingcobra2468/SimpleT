@@ -21,11 +21,12 @@ import com.github.simplet.utils.LocalStorage;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     //private LocalStorage localStorage;
-    private List<Integer> mRpistList = new ArrayList<>();
+    private List<Integer> mRpistList = new ArrayList<>(Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21));
     private RecyclerView mRecyclerView;
     private RpistAdapter mRpistAdapter;
     // private AsyncTask temp_refresh;
@@ -34,9 +35,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mRpistList.add(1);
-        mRpistList.add(2);
-        mRpistList.add(1);
         setContentView(R.layout.activity_main);
 
         Toolbar myToolbar = findViewById(com.github.simplet.R.id.my_toolbar);

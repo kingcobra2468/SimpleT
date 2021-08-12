@@ -29,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(com.github.simplet.R.layout.settings);
+        setContentView(com.github.simplet.R.layout.activity_settings);
 
         Toolbar myToolbar = findViewById(com.github.simplet.R.id.my_toolbar);
         myToolbar.setBackgroundColor(getResources().getColor(com.github.simplet.R.color
