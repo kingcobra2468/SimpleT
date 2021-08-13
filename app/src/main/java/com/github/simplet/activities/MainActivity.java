@@ -1,6 +1,7 @@
 package com.github.simplet.activities;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -46,9 +47,14 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
+        /*
         mRecyclerView.addItemDecoration(
-                new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+                new DividerItemDecoration(this, LinearLayoutManager.VERTICAL) {
+                    @Override
+                    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                        super.onDraw(c, parent, state);
+                    }
+                });*/
         mRecyclerView.setAdapter(mRpistAdapter);
     }
 
