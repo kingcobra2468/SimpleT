@@ -18,6 +18,8 @@ import com.github.simplet.R;
 import com.github.simplet.adapters.RpistAdapter;
 import com.github.simplet.network.APIRequest;
 import com.github.simplet.utils.LocalStorage;
+import com.github.simplet.utils.RpistNode;
+import com.github.simplet.utils.TemperatureScale;
 
 import org.json.JSONObject;
 
@@ -27,7 +29,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     //private LocalStorage localStorage;
-    private List<Integer> mRpistList = new ArrayList<>(Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21));
+    private List<RpistNode> mRpistList = new ArrayList<>(Arrays.asList(
+            new RpistNode(70, TemperatureScale.CELSIUS),
+            new RpistNode(20, TemperatureScale.CELSIUS),
+            new RpistNode(40, TemperatureScale.FAHRENHEIT)
+    ));
     private RecyclerView mRecyclerView;
     private RpistAdapter mRpistAdapter;
     // private AsyncTask temp_refresh;
@@ -47,14 +53,6 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        /*
-        mRecyclerView.addItemDecoration(
-                new DividerItemDecoration(this, LinearLayoutManager.VERTICAL) {
-                    @Override
-                    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                        super.onDraw(c, parent, state);
-                    }
-                });*/
         mRecyclerView.setAdapter(mRpistAdapter);
     }
 

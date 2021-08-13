@@ -9,34 +9,38 @@ import android.widget.TextView;
 
 import com.github.simplet.R;
 import com.github.simplet.activities.MainActivity;
+import com.github.simplet.utils.RpistNode;
 
 import java.util.List;
 
-public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistNode> {
-    private List<Integer> mRpistList;
+public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistItem> {
+    private List<RpistNode> mRpistList;
     private MainActivity mMainActivity;
 
-    public RpistAdapter (MainActivity mainActivity, List<Integer> rpists) {
+    public RpistAdapter (MainActivity mainActivity, List<RpistNode> rpists) {
         mMainActivity = mainActivity;
         mRpistList = rpists;
     }
 
-    public RpistAdapter(List<Integer> mRpistList) {
+    public RpistAdapter(List<RpistNode> mRpistList) {
         this.mRpistList = mRpistList;
     }
 
     @NonNull
     @Override
-    public RpistAdapter.RpistNode onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public RpistAdapter.RpistItem onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.rpist_card, viewGroup, false);
 
-        return new RpistNode(itemView);
+        return new RpistItem(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RpistAdapter.RpistNode listItemHolder, int i) {
-        listItemHolder.mTemperature.setText(mRpistList.get(i).toString());
+    public void onBindViewHolder(@NonNull RpistAdapter.RpistItem listItemHolder, int i) {
+        RpistNode rpistNode = mRpistList.get(i);
+
+        listItemHolder.mTemperature.setText(String.valueOf(rpistNode.getTemperature()));
+        listItemHolder.mUnits.setText(rpistNode.getTemperatureScale().symbol);
     }
 
     @Override
@@ -44,12 +48,17 @@ public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistNode> {
         return mRpistList.size();
     }
 
-    public class RpistNode extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class RpistItem extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView mTemperature;
+        TextView mRpistId;
+        TextView mUnits;
 
-        public RpistNode(@NonNull View itemView) {
+        public RpistItem(@NonNull View itemView) {
             super(itemView);
+
             mTemperature = itemView.findViewById(R.id.temperature);
+            mRpistId = itemView.findViewById(R.id.rpist_id);
+            mUnits = itemView.findViewById(R.id.units);
         }
 
         @Override
