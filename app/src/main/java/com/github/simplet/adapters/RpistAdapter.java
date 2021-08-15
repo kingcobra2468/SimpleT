@@ -30,7 +30,7 @@ public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistItem> {
     @Override
     public RpistAdapter.RpistItem onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.rpist_card, viewGroup, false);
+                .inflate(R.layout.fragment_rpist_card, viewGroup, false);
 
         return new RpistItem(itemView);
     }
