@@ -1,28 +1,23 @@
 package com.github.simplet.activities;
 
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.github.simplet.R;
 import com.github.simplet.adapters.RpistAdapter;
-import com.github.simplet.network.APIRequest;
-import com.github.simplet.utils.LocalStorage;
+import com.github.simplet.network.clients.RpistNodeClient;
+import com.github.simplet.network.clients.RpistTempCallback;
 import com.github.simplet.utils.RpistNode;
 import com.github.simplet.utils.TemperatureScale;
 
-import org.json.JSONObject;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +49,28 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mRpistAdapter);
+
+        RpistNodeClient client = new RpistNodeClient("http://10.0.1.184:8080/");
+        try {
+            client.connect("tester");
+            client.getCelsius(new RpistTempCallback() {
+                @Override
+                public void onSuccess(float temperature) {
+                    mRpistList.get(0).setTemperature(temperature);
+                    mRpistAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(String code, String message) {
+                    mRpistList.get(0).setTemperature(-99);
+                    mRpistAdapter.notifyDataSetChanged();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            mRpistList.get(0).setTemperature(-199);
+            mRpistAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

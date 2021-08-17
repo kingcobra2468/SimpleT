@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.github.simplet.R;
 import com.github.simplet.activities.MainActivity;
+import com.github.simplet.network.clients.RpistNodeClient;
 import com.github.simplet.utils.RpistNode;
 
 import java.util.List;
@@ -63,6 +64,7 @@ public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistItem> {
 
         @Override
         public void onClick(View view) {
+            //TODO: Change units wnen clicked
         }
     }
 }
