@@ -26,9 +26,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 public class MainActivity extends AppCompatActivity {
-    //private LocalStorage localStorage;
     private final List<RpistNode> mRpistList = new ArrayList<>(Arrays.asList(
             new RpistNode(70, TemperatureScale.CELSIUS),
             new RpistNode(20, TemperatureScale.CELSIUS),
@@ -55,7 +55,12 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mRpistAdapter);
 
-        ExecutorService executor = Executors.newScheduledThreadPool(1);
+        ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
+            Thread thread = new Thread(r);
+            thread.setDaemon(true);
+            return thread;
+        });
+
         HandlerThread ht = new HandlerThread("temperatureRefresh");
         ht.start();
 
