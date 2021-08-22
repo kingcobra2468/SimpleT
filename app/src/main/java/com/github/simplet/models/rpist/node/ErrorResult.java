@@ -1,4 +1,4 @@
-package com.github.simplet.models.rpist;
+package com.github.simplet.models.rpist.node;
 
 public class ErrorResult {
     private String code;

@@ -4,6 +4,11 @@ public class RpistNode {
     private float mTemperature;
     private TemperatureScale mTemperatureScale;
 
+    public RpistNode() {
+        mTemperature = -99;
+        mTemperatureScale = TemperatureScale.CELSIUS;
+    }
+
     public RpistNode(float temperature, TemperatureScale scale) {
         mTemperature = temperature;
         mTemperatureScale = scale;

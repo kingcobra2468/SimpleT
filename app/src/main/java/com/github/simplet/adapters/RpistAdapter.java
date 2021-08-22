@@ -9,16 +9,15 @@ import android.widget.TextView;
 
 import com.github.simplet.R;
 import com.github.simplet.activities.MainActivity;
-import com.github.simplet.network.clients.RpistNodeClient;
 import com.github.simplet.utils.RpistNode;
 
 import java.util.List;
 
 public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistItem> {
-    private List<RpistNode> mRpistList;
+    private final List<RpistNode> mRpistList;
     private MainActivity mMainActivity;
 
-    public RpistAdapter (MainActivity mainActivity, List<RpistNode> rpists) {
+    public RpistAdapter(MainActivity mainActivity, List<RpistNode> rpists) {
         mMainActivity = mainActivity;
         mRpistList = rpists;
     }

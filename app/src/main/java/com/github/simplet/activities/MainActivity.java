@@ -1,5 +1,6 @@
 package com.github.simplet.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,33 +10,31 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.github.simplet.R;
 import com.github.simplet.adapters.RpistAdapter;
-import com.github.simplet.network.clients.RpistNodeClient;
-import com.github.simplet.network.clients.RpistTempCallback;
+import com.github.simplet.network.rpist.RpistNodeClient;
+import com.github.simplet.network.rpist.RpistTempCallback;
 import com.github.simplet.utils.RpistNode;
-import com.github.simplet.utils.TemperatureScale;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 public class MainActivity extends AppCompatActivity {
-    private final List<RpistNode> mRpistList = new ArrayList<>(Arrays.asList(
+    private final List<RpistNode> mRpistList = new ArrayList<>();/* = new ArrayList<>(Arrays.asList(
             new RpistNode(70, TemperatureScale.CELSIUS),
             new RpistNode(20, TemperatureScale.CELSIUS),
             new RpistNode(40, TemperatureScale.FAHRENHEIT)
-    ));
+    ));*/
     private RecyclerView mRecyclerView;
     private RpistAdapter mRpistAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         myToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         setSupportActionBar(myToolbar);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rpist_recycle_view);
+        mRecyclerView = findViewById(R.id.rpist_recycle_view);
         mRpistAdapter = new RpistAdapter(this, mRpistList);
         RecyclerView.LayoutManager mLayoutManager =
                 new LinearLayoutManager(getApplicationContext());
@@ -64,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         HandlerThread ht = new HandlerThread("temperatureRefresh");
         ht.start();
 
+        Handler uihandler = new Handler();
         Handler handler = new Handler(ht.getLooper());
         RpistNodeClient client = new RpistNodeClient("http://10.0.1.184:8080/");
 
@@ -71,27 +71,42 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    client.connect("tester");
+                    client.connect("tester")
+                            .fetchRpistId();
                     client.getCelsius(new RpistTempCallback() {
                         @Override
                         public void onSuccess(float temperature) {
-                            mRpistList.get(0).setTemperature(temperature);
+                            mRpistList.clear();
+                            mRpistList.addAll(client.getRpistNodes());
+
                             mRpistAdapter.notifyDataSetChanged();
                         }
 
                         @Override
                         public void onError(String code, String message) {
-                            mRpistList.get(0).setTemperature(-99);
-                            mRpistAdapter.notifyDataSetChanged();
+                            uihandler.post(() -> {
+                                Context context = getApplicationContext();
+                                CharSequence text = "Error occurred when trying to get newest " +
+                                        "measurements";
+                                int duration = Toast.LENGTH_SHORT;
+
+                                Toast toast = Toast.makeText(context, text, duration);
+                                toast.show();
+                            });
                         }
                     });
                 } catch (IOException e) {
-                    Log.e("Network", e.toString());
-                    mRpistList.get(0).setTemperature(-199);
-                    mRpistAdapter.notifyDataSetChanged();
+                    uihandler.post(() -> {
+                        Context context = getApplicationContext();
+                        CharSequence text = "Failed to connect to RPIST node or base";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                    });
                 }
 
-                handler.postDelayed(this, 2000);
+                handler.postDelayed(this, 5000);
             }
         });
     }
