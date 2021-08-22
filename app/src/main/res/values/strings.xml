@@ -6,5 +6,13 @@
     <string name="rasp_pi_hash"></string>
     <string name="unit">Fahrenheit</string>
     <string name="api_mode">Public</string>
-
+    <string-array name="scales">
+        <item>Fahrenheit</item>
+        <item>Celsius</item>
+        <item>Kelvin</item>
+    </string-array>
+    <string-array name="modes">
+        <item>Node</item>
+        <item>Base Station</item>
+    </string-array>
 </resources>

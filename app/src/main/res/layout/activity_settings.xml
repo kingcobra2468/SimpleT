@@ -20,67 +20,51 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="411dp"
+        android:measureWithLargestChild="true"
         android:orientation="horizontal">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
-                android:id="@+id/username_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/secret_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
+                android:gravity="center"
                 android:paddingLeft="15dp"
-                android:text="Username" />
-
-            <EditText
-                android:id="@+id/username_input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="text" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/password_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="monospace"
-                android:paddingLeft="15dp"
-                android:text="Password" />
+                android:text="Secret" />
 
             <EditText
                 android:id="@+id/password_input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:ems="10"
                 android:inputType="textPersonName" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/refresh_rate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
+                android:gravity="center"
                 android:paddingLeft="15dp"
                 android:text="Refresh (sec)" />
 
             <EditText
                 android:id="@+id/refresh_input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:ems="10"
                 android:fontFamily="monospace"
                 android:inputType="numberSigned" />
@@ -88,21 +72,23 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
-                android:id="@+id/api_url"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
+                android:gravity="center"
                 android:paddingLeft="15dp"
-                android:text="API Url" />
+                android:text="Address" />
 
             <EditText
                 android:id="@+id/api_url_input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:ems="10"
                 android:fontFamily="monospace"
                 android:inputType="textPersonName"
@@ -112,63 +98,46 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
-                android:id="@+id/hash_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/mode"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
+                android:gravity="center"
                 android:paddingLeft="15dp"
-                android:text="Rasp Pi Hash" />
+                android:text="Mode" />
 
-            <EditText
-                android:id="@+id/rasp_pi_hash_input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:fontFamily="monospace"
-                android:inputType="textPersonName" />
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/convesion_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
+                android:gravity="center"
                 android:paddingLeft="15dp"
-                android:text="Units" />
+                android:text="Scale" />
 
             <Spinner
-                android:id="@+id/conversion_input"
+                android:id="@+id/spinner2"
                 android:layout_width="match_parent"
-                android:layout_height="40dp" />
-        </TableRow>
+                android:layout_height="match_parent" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/api_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="monospace"
-                android:paddingLeft="15dp"
-                android:text="API Mode" />
-
-            <Spinner
-                android:id="@+id/api_mode_input"
-                android:layout_width="match_parent"
-                android:layout_height="40dp" />
         </TableRow>
 
     </TableLayout>
@@ -184,8 +153,8 @@
             android:layout_width="216dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
+            android:layout_marginTop="40dp"
             android:layout_marginRight="30dp"
-            android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:background="?attr/colorButtonNormal"
             android:fontFamily="monospace"
