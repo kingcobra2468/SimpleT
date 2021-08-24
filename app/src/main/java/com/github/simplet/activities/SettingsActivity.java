@@ -3,6 +3,7 @@ package com.github.simplet.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,13 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.github.simplet.utils.LocalStorage;
+import com.github.simplet.R;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView
         .OnItemSelectedListener {
-
-    private final String[] conversionOptions = new String[]{"Fahrenheit", "Celcius", "Kelvin"};
-    private final String[] apiModeOptions = new String[]{"Private", "Public"};
     private Button saveSettings;
     private Spinner conversionSpinner, apiModeSpinner;
     private EditText username, password, refresh, apiUrl, raspPiHash;
@@ -28,14 +26,44 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(com.github.simplet.R.layout.activity_settings);
 
-        Toolbar myToolbar = findViewById(com.github.simplet.R.id.my_toolbar);
-        myToolbar.setBackgroundColor(getResources().getColor(com.github.simplet.R.color
-                .colorPrimary));
-        setSupportActionBar(myToolbar);
+        Spinner scaleSpinner = findViewById(R.id.scale_spinner);
+        Spinner modeSpinner = findViewById(R.id.mode_spinner);
 
+        ArrayAdapter<CharSequence> scaleAdapter = ArrayAdapter.createFromResource(this,
+                R.array.scales, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> modeAdapter = ArrayAdapter.createFromResource(this,
+                R.array.modes, android.R.layout.simple_spinner_item);
+
+        scaleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        modeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        scaleSpinner.setAdapter(scaleAdapter);
+        modeSpinner.setAdapter(modeAdapter);
+
+        scaleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        modeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("Mode Selector", parent.getItemAtPosition(position).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        /*
         LocalStorage.setContext(this);
 
         this.conversionSpinner = findViewById(com.github.simplet.R.id.conversion_input);
@@ -79,9 +107,9 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView
                 finish();
             }
         });
-
+        */
     }
-
+    /*
     private void getSettings() {
         this.setUsername(LocalStorage.getString(com.github.simplet.R.string.username, ""));
         this.setPassword(LocalStorage.getString(com.github.simplet.R.string.password, ""));
@@ -91,7 +119,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView
         this.setRefresh(LocalStorage.getInt(com.github.simplet.R.integer.refresh, 5));
         this.setUnits(LocalStorage.getString(com.github.simplet.R.string.unit, "fahrenheit"));
         this.setAPIMode(LocalStorage.getString(com.github.simplet.R.string.api_mode, "Public"));
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -113,7 +141,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    /*
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (parent.getId() == com.github.simplet.R.id.conversion_input) {
@@ -123,6 +151,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView
             this.temp_api_mode = this.apiModeOptions[position];
 
         }
+
+    }*/
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
     }
 

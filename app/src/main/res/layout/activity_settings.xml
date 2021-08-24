@@ -34,14 +34,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
-                android:gravity="center"
-                android:paddingLeft="15dp"
+                android:gravity="center|left"
+                android:paddingLeft="30dp"
                 android:text="Secret" />
 
             <EditText
                 android:id="@+id/password_input"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName" />
         </TableRow>
@@ -57,14 +57,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
-                android:gravity="center"
-                android:paddingLeft="15dp"
+                android:gravity="center|left"
+                android:paddingLeft="30dp"
                 android:text="Refresh (sec)" />
 
             <EditText
                 android:id="@+id/refresh_input"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:fontFamily="monospace"
                 android:inputType="numberSigned" />
@@ -81,14 +81,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
-                android:gravity="center"
-                android:paddingLeft="15dp"
+                android:gravity="center|left"
+                android:paddingLeft="30dp"
                 android:text="Address" />
 
             <EditText
                 android:id="@+id/api_url_input"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:fontFamily="monospace"
                 android:inputType="textPersonName"
@@ -107,12 +107,12 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
-                android:gravity="center"
-                android:paddingLeft="15dp"
+                android:gravity="center|left"
+                android:paddingLeft="30dp"
                 android:text="Mode" />
 
             <Spinner
-                android:id="@+id/spinner"
+                android:id="@+id/mode_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -129,12 +129,12 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
-                android:gravity="center"
-                android:paddingLeft="15dp"
+                android:gravity="center|left"
+                android:paddingLeft="30dp"
                 android:text="Scale" />
 
             <Spinner
-                android:id="@+id/spinner2"
+                android:id="@+id/scale_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
