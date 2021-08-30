@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_favorite"
+        android:id="@+id/settings_icon"
         android:icon="@drawable/settings_icon"
-        android:title="Test"
-        app:showAsAction="ifRoom"/>
+        android:title="Settings"
+        app:showAsAction="ifRoom" />
 
 </menu>

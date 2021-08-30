@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        app:key="authentication_category"
+        app:title="Authentication"
+        app:useSimpleSummaryProvider="true">
+
+        <EditTextPreference
+            app:key="auth_secret"
+            app:title="Authentication secret"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="rpist_category"
+        app:title="RPIST">
+
+        <EditTextPreference
+            app:key="address"
+            app:title="Node host address"
+            app:useSimpleSummaryProvider="true"/>
+        <ListPreference
+            app:key="mode"
+            app:title="RPIST serving mode"
+            android:entries="@array/modes"
+            android:entryValues="@array/modes"
+            app:useSimpleSummaryProvider="true" />
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="other_category"
+        app:title="Other">
+
+        <EditTextPreference
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            app:key="refresh_rate"
+            app:title="Temperature refresh rate(in seconds)"
+            app:useSimpleSummaryProvider="true"/>
+        <ListPreference
+            app:key="scale"
+            app:title="Temperature scale"
+            android:entries="@array/scales"
+            android:entryValues="@array/scales"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

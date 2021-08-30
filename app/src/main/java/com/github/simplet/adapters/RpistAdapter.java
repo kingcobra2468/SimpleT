@@ -1,7 +1,5 @@
 package com.github.simplet.adapters;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +10,9 @@ import com.github.simplet.activities.MainActivity;
 import com.github.simplet.utils.RpistNode;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistItem> {
     private final List<RpistNode> mRpistList;
@@ -46,6 +47,13 @@ public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistItem> {
     @Override
     public int getItemCount() {
         return mRpistList.size();
+    }
+
+    public void setRpistList ( List<RpistNode> rpists) {
+        mRpistList.clear();
+        mRpistList.addAll(rpists);
+
+        notifyDataSetChanged();
     }
 
     public class RpistItem extends RecyclerView.ViewHolder implements View.OnClickListener {
