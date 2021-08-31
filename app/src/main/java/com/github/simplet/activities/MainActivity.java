@@ -6,13 +6,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.github.simplet.R;
 import com.github.simplet.adapters.RpistAdapter;
+import com.github.simplet.models.rpist.RpistViewModel;
 import com.github.simplet.network.rpist.RpistNodeClient;
 import com.github.simplet.network.rpist.RpistTempCallback;
 import com.github.simplet.utils.RpistNode;
@@ -27,10 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.OnLifecycleEvent;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,9 +41,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     ));*/
     private RecyclerView mRecyclerView;
     private RpistAdapter mRpistAdapter;
-        private RpistRefreshObserver refreshObserver;
     private RpistViewModel rpistViewModel;
     private RpistNodeClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,12 +62,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mRpistAdapter);
 
-        //rpistViewModel = new ViewModelProvider(this).get(RpistViewModel.class);
-        //rpistViewModel.getRpists().observe(this,
-        //        rpistNodes -> mRpistAdapter.setRpistList(rpistNodes));
+        rpistViewModel = new ViewModelProvider(this).get(RpistViewModel.class);
+        rpistViewModel.getRpists().observe(this,
+                rpistNodes -> mRpistAdapter.setRpistList(rpistNodes));
 
         client = new RpistNodeClient("http://10.0.1.184:8080/");
-
     }
 
     @Override
@@ -115,24 +111,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         super.onDestroy();
     }
 
-    public class RpistViewModel extends ViewModel {
-        private MutableLiveData<List<RpistNode>> rpistsLiveData;
-
-        public RpistViewModel() {
-
-            rpistsLiveData = new MutableLiveData<>();
-        }
-
-        public MutableLiveData<List<RpistNode>> getRpists(){
-            return rpistsLiveData;
-        }
-    }
-
     private class RpistRefreshObserver implements LifecycleObserver {
+        HandlerThread ht;
         private Lifecycle lifecycle;
         private ExecutorService executor;
         private Handler uiHandler, rpistHandler;
-        HandlerThread ht;
 
         @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
         void create() {
@@ -163,12 +146,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private class RpistRefreshRunnable implements Runnable {
-        private Handler uiHandler, rpistHandler;
+        private final Handler uiHandler;
+        private final Handler rpistHandler;
 
         public RpistRefreshRunnable(Handler uiHandler, Handler rpistHandler) {
             this.uiHandler = uiHandler;
             this.rpistHandler = rpistHandler;
         }
+
         @Override
         public void run() {
             try {
@@ -177,9 +162,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 client.getCelsius(new RpistTempCallback() {
                     @Override
                     public void onSuccess(float temperature) {
-                        //rpistViewModel.getRpists().setValue(client.getRpistNodes());
-
-                        mRpistAdapter.setRpistList(client.getRpistNodes());
+                        rpistViewModel.getRpists().setValue(client.getRpistNodes());
                     }
 
                     @Override
