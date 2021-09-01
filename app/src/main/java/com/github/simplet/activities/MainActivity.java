@@ -72,7 +72,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         rpistViewModel.getRpists().observe(this,
                 rpistNodes -> mRpistAdapter.setRpistList(rpistNodes));
 
-        client = new RpistNodeClient(preferences.getString("address", "http://127.0.0.1/"));
+        client = new RpistNodeClient(preferences.getString("rpist_hostname", "http://127.0.0.1"),
+                Integer.parseInt(preferences.getString("rpist_port", "8080"))
+        );
     }
 
     @Override
@@ -96,11 +98,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.e("here", "a");
         switch (key) {
-            case "address":
-                Log.i("Preferences", preferences.getString(key, "http://127.0.0.1/"));
-                client.setBaseUrl(preferences.getString(key, "http://127.0.0.1/"));
+            case "rpist_hostname":
+            case "rpist_port":
+                client.setBaseUrl(preferences.getString("rpist_hostname", "http://127.0.0.1"),
+                        Integer.parseInt(preferences.getString("rpist_port", "8080")));
                 client.resetConnection();
 
                 break;
@@ -119,8 +121,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 thread.setDaemon(true);
                 return thread;
             });
-
-            //executor.execute(new RpistRefreshRunnable(uiHandler, rpistHandler));
         }
 
         @OnLifecycleEvent(Lifecycle.Event.ON_START)

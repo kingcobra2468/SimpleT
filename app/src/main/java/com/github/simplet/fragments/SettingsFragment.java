@@ -13,11 +13,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
         EditTextPreference refreshPreference = findPreference("refresh_rate");
+        EditTextPreference portPreference = findPreference("rpist_port");
+
         if (refreshPreference != null) {
             refreshPreference.setOnBindEditTextListener(
                     editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER)
             );
         }
-
+        if (portPreference != null) {
+            portPreference.setOnBindEditTextListener(
+                    editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER)
+            );
+        }
     }
 }

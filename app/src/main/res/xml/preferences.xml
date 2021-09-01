@@ -18,8 +18,12 @@
         app:title="RPIST">
 
         <EditTextPreference
-            app:key="address"
-            app:title="Node host address"
+            app:key="rpist_hostname"
+            app:title="Node host name"
+            app:useSimpleSummaryProvider="true"/>
+        <EditTextPreference
+            app:key="rpist_port"
+            app:title="Node port"
             app:useSimpleSummaryProvider="true"/>
         <ListPreference
             app:key="mode"
