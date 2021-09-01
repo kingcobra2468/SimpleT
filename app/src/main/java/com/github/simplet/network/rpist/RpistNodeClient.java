@@ -51,7 +51,9 @@ public class RpistNodeClient extends RpistClient {
     }
 
     public RpistNodeClient connect(String secret) throws IOException {
-        Call<AuthResult> call = service.getJwt(new AuthRequest(secret));
+        super.connect(secret);
+
+        Call<AuthResult> call = service.getJwt(new AuthRequest(this.secret));
 
         Response<AuthResult> response = call.execute();
 
@@ -62,6 +64,7 @@ public class RpistNodeClient extends RpistClient {
             throw new RpistErrorException(error.getCode(), error.getMessage());
         }
         jwt = response.body().getJwt();
+        connected = true;
 
         return this;
     }

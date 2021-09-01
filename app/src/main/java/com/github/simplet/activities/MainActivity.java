@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -17,7 +18,6 @@ import com.github.simplet.network.rpist.RpistNodeClient;
 import com.github.simplet.network.rpist.RpistTempCallback;
 import com.github.simplet.utils.RpistNode;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -29,6 +29,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,12 +44,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private RpistAdapter mRpistAdapter;
     private RpistViewModel rpistViewModel;
     private RpistNodeClient client;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLifecycle().addObserver(new RpistRefreshObserver());
         setContentView(R.layout.activity_main);
+
+        getLifecycle().addObserver(new RpistRefreshObserver());
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.registerOnSharedPreferenceChangeListener(this);
 
         Toolbar myToolbar = findViewById(com.github.simplet.R.id.my_toolbar);
         myToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -66,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         rpistViewModel.getRpists().observe(this,
                 rpistNodes -> mRpistAdapter.setRpistList(rpistNodes));
 
-        client = new RpistNodeClient("http://10.0.1.184:8080/");
+        client = new RpistNodeClient(preferences.getString("address", "http://127.0.0.1/"));
     }
 
     @Override
@@ -89,31 +95,20 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        switch (s) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.e("here", "a");
+        switch (key) {
             case "address":
+                Log.i("Preferences", preferences.getString(key, "http://127.0.0.1/"));
+                client.setBaseUrl(preferences.getString(key, "http://127.0.0.1/"));
+                client.resetConnection();
+
                 break;
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
     private class RpistRefreshObserver implements LifecycleObserver {
         HandlerThread ht;
-        private Lifecycle lifecycle;
         private ExecutorService executor;
         private Handler uiHandler, rpistHandler;
 
@@ -124,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 thread.setDaemon(true);
                 return thread;
             });
+
+            //executor.execute(new RpistRefreshRunnable(uiHandler, rpistHandler));
         }
 
         @OnLifecycleEvent(Lifecycle.Event.ON_START)
@@ -156,38 +153,52 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         @Override
         public void run() {
-            try {
-                client.connect("tester")
-                        .fetchRpistId();
-                client.getCelsius(new RpistTempCallback() {
-                    @Override
-                    public void onSuccess(float temperature) {
-                        rpistViewModel.getRpists().setValue(client.getRpistNodes());
-                    }
 
-                    @Override
-                    public void onError(String code, String message) {
-                        uiHandler.post(() -> {
-                            Context context = getApplicationContext();
-                            CharSequence text = "Error occurred when trying to get newest " +
-                                    "measurements";
-                            int duration = Toast.LENGTH_SHORT;
+            if (client.isConnectionReset()) {
+                Log.i("RPIST", "Attempting to connect");
 
-                            Toast toast = Toast.makeText(context, text, duration);
-                            toast.show();
-                        });
-                    }
-                });
-            } catch (IOException e) {
-                uiHandler.post(() -> {
-                    Context context = getApplicationContext();
-                    CharSequence text = "Failed to connect to RPIST node or base";
-                    int duration = Toast.LENGTH_SHORT;
+                try {
+                    client.connect("tester")
+                            .fetchRpistId();
+                    Log.i("RPIST", "Connection success");
+                } catch (Exception e) {
+                    Log.e("RPIST", e.toString());
+                    uiHandler.post(() -> {
+                        Context context = getApplicationContext();
+                        CharSequence text = "Failed to connect to RPIST node or base";
+                        int duration = Toast.LENGTH_SHORT;
 
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.show();
-                });
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                        return;
+                    });
+                }
             }
+            if (!client.isConnected()) {
+                Log.i("RPIST", "Connection failure");
+                return;
+            }
+
+            client.getCelsius(new RpistTempCallback() {
+
+                @Override
+                public void onSuccess(float temperature) {
+                    rpistViewModel.getRpists().setValue(client.getRpistNodes());
+                }
+
+                @Override
+                public void onError(String code, String message) {
+                    uiHandler.post(() -> {
+                        Context context = getApplicationContext();
+                        CharSequence text = "Error occurred when trying to get newest " +
+                                "measurements";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                    });
+                }
+            });
 
             rpistHandler.postDelayed(this, 5000);
         }

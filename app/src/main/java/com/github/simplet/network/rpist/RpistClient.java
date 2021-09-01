@@ -16,36 +16,43 @@ import retrofit2.Response;
 
 public abstract class RpistClient {
     protected String jwt = "";
+    protected String secret;
     protected String baseUrl;
+    protected boolean connected = false, connectionReset = true;
     protected RpistNodeService service;
     protected LinkedHashMap<String, RpistNode> rpists;
 
     public RpistClient(String address, int port) {
         baseUrl = String.format("%s:%d", address, port);
         rpists = new LinkedHashMap<>();
-        setup();
     }
 
     public RpistClient(String baseUrl) {
         this.baseUrl = baseUrl;
         rpists = new LinkedHashMap<>();
-        setup();
     }
 
     public RpistClient connect(String secret) throws IOException {
-        Call<AuthResult> call = service.getJwt(new AuthRequest(secret));
-
-        Response<AuthResult> response = call.execute();
-
-        if (!response.isSuccessful()) {
-            Gson gson = new Gson();
-            ErrorResult error = gson.fromJson(response.errorBody().charStream(), ErrorResult.class);
-
-            throw new RpistErrorException(error.getCode(), error.getMessage());
-        }
-        jwt = response.body().getJwt();
+        this.secret = secret;
+        setup();
 
         return this;
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void resetConnection() {
+        connectionReset = true;
+    }
+
+    public boolean isConnectionReset() {
+        return connectionReset;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     protected abstract RpistClient setup();

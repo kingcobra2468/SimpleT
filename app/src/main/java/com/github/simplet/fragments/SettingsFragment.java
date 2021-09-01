@@ -12,9 +12,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
-        EditTextPreference weeklyGoalPref = findPreference("refresh_rate");
-        if (weeklyGoalPref != null) {
-            weeklyGoalPref.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+        EditTextPreference refreshPreference = findPreference("refresh_rate");
+        if (refreshPreference != null) {
+            refreshPreference.setOnBindEditTextListener(
+                    editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER)
+            );
         }
 
     }
