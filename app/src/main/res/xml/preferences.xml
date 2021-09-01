@@ -40,9 +40,9 @@
         app:title="Other">
 
         <EditTextPreference
+            app:key="refresh_rate"
             android:digits="0123456789"
             android:inputType="numberDecimal"
-            app:key="refresh_rate"
             app:title="Temperature refresh rate(in seconds)"
             app:useSimpleSummaryProvider="true"/>
         <ListPreference

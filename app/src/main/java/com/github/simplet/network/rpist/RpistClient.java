@@ -56,7 +56,7 @@ public abstract class RpistClient {
     }
 
     public void setBaseUrl(String address, int port) {
-        baseUrl = String.format("%s:%d", address, port);
+        baseUrl = String.format("%s:%d/", address, port);
     }
 
     protected abstract RpistClient setup();

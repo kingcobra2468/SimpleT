@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         switch (key) {
             case "rpist_hostname":
             case "rpist_port":
+            case "auth_secret":
                 client.setBaseUrl(preferences.getString("rpist_hostname", "http://127.0.0.1"),
                         Integer.parseInt(preferences.getString("rpist_port", "8080")));
                 client.resetConnection();
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 Log.i("RPIST", "Attempting to connect");
 
                 try {
-                    client.connect("tester")
+                    client.connect(preferences.getString("auth_secret", ""))
                             .fetchRpistId();
                     Log.i("RPIST", "Connection success");
                 } catch (Exception e) {
@@ -194,13 +195,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                                 "measurements";
                         int duration = Toast.LENGTH_SHORT;
 
-                        Toast toast = Toast.makeText(context, text, duration);
+                        Toast toast = Toast.makeText(context, message, duration);
                         toast.show();
                     });
                 }
             });
 
-            rpistHandler.postDelayed(this, 5000);
+            rpistHandler.postDelayed(this, Integer.parseInt(preferences.getString("refresh_rate",
+                    "5000")));
         }
     }
 }
