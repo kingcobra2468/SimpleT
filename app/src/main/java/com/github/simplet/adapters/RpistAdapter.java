@@ -1,5 +1,6 @@
 package com.github.simplet.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,9 @@ import android.widget.TextView;
 import com.github.simplet.R;
 import com.github.simplet.activities.MainActivity;
 import com.github.simplet.utils.RpistNode;
+import com.github.simplet.utils.TemperatureScale;
 
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -36,8 +39,16 @@ public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistItem> {
     public void onBindViewHolder(@NonNull RpistAdapter.RpistItem listItemHolder, int i) {
         RpistNode rpistNode = rpistList.get(i);
 
-        listItemHolder.temperature.setText(String.valueOf(rpistNode.getTemperature()));
+        listItemHolder.temperature.setText(String.format("%.2f", rpistNode.getTemperature()));
         listItemHolder.units.setText(rpistNode.getTemperatureScale().symbol);
+
+        listItemHolder.itemView.setOnClickListener(view -> {
+            RpistNode node = rpistList.get(listItemHolder.getAdapterPosition());
+            TemperatureScale currentScale = node.getTemperatureScale();
+
+            int scaleIndex = TemperatureScale.scales.indexOf(currentScale);
+            node.setTemperatureScale(TemperatureScale.scales.get((scaleIndex + 1) % 3));
+        });
     }
 
     @Override
@@ -67,7 +78,6 @@ public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistItem> {
 
         @Override
         public void onClick(View view) {
-            //TODO: Change units wnen clicked
         }
     }
 }

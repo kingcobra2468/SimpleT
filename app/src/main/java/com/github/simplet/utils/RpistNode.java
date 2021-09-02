@@ -14,8 +14,21 @@ public class RpistNode {
         temperatureScale = scale;
     }
 
-    public float getTemperature() {
-        return temperature;
+    public double getTemperature() {
+        double adaptedTemperature = temperature;
+
+        switch (temperatureScale) {
+            case CELSIUS:
+                break;
+            case FAHRENHEIT:
+                adaptedTemperature = (temperature * (9.0 / 5.0)) + 32.0;
+                break;
+            case KELVIN:
+                adaptedTemperature = temperature + 273.15;
+                break;
+        }
+
+        return adaptedTemperature;
     }
 
     public void setTemperature(float temperature) {
