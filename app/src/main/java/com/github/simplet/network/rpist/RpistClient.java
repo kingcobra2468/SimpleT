@@ -1,18 +1,11 @@
 package com.github.simplet.network.rpist;
 
-import com.github.simplet.models.rpist.node.AuthRequest;
-import com.github.simplet.models.rpist.node.AuthResult;
-import com.github.simplet.models.rpist.node.ErrorResult;
 import com.github.simplet.utils.RpistNode;
 import com.github.simplet.utils.TemperatureScale;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Response;
 
 public abstract class RpistClient {
     protected String jwt = "";

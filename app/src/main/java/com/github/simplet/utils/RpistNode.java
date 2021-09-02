@@ -1,32 +1,32 @@
 package com.github.simplet.utils;
 
 public class RpistNode {
-    private float mTemperature;
-    private TemperatureScale mTemperatureScale;
+    private float temperature;
+    private TemperatureScale temperatureScale;
 
     public RpistNode() {
-        mTemperature = -99;
-        mTemperatureScale = TemperatureScale.CELSIUS;
+        temperature = -99;
+        temperatureScale = TemperatureScale.CELSIUS;
     }
 
     public RpistNode(float temperature, TemperatureScale scale) {
-        mTemperature = temperature;
-        mTemperatureScale = scale;
+        this.temperature = temperature;
+        temperatureScale = scale;
     }
 
     public float getTemperature() {
-        return mTemperature;
+        return temperature;
     }
 
     public void setTemperature(float temperature) {
-        this.mTemperature = temperature;
+        this.temperature = temperature;
     }
 
     public TemperatureScale getTemperatureScale() {
-        return mTemperatureScale;
+        return temperatureScale;
     }
 
     public void setTemperatureScale(TemperatureScale temperatureScale) {
-        this.mTemperatureScale = temperatureScale;
+        this.temperatureScale = temperatureScale;
     }
 }

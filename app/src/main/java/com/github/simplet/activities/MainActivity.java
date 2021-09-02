@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             new RpistNode(20, TemperatureScale.CELSIUS),
             new RpistNode(40, TemperatureScale.FAHRENHEIT)
     ));*/
-    private RecyclerView mRecyclerView;
-    private RpistAdapter mRpistAdapter;
+    private RecyclerView recyclerView;
+    private RpistAdapter rpistAdapter;
     private RpistViewModel rpistViewModel;
     private RpistNodeClient client;
     private SharedPreferences preferences;
@@ -60,17 +60,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         myToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         setSupportActionBar(myToolbar);
 
-        mRecyclerView = findViewById(R.id.rpist_recycle_view);
-        mRpistAdapter = new RpistAdapter(this, mRpistList);
+        recyclerView = findViewById(R.id.rpist_recycle_view);
+        rpistAdapter = new RpistAdapter(this, mRpistList);
         RecyclerView.LayoutManager mLayoutManager =
                 new LinearLayoutManager(getApplicationContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mRpistAdapter);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(rpistAdapter);
 
         rpistViewModel = new ViewModelProvider(this).get(RpistViewModel.class);
         rpistViewModel.getRpists().observe(this,
-                rpistNodes -> mRpistAdapter.setRpistList(rpistNodes));
+                rpistNodes -> rpistAdapter.setRpistList(rpistNodes));
 
         client = new RpistNodeClient(preferences.getString("rpist_hostname", "http://127.0.0.1"),
                 Integer.parseInt(preferences.getString("rpist_port", "8080"))
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private class RpistRefreshObserver implements LifecycleObserver {
-        HandlerThread ht;
+        private HandlerThread ht;
         private ExecutorService executor;
         private Handler uiHandler, rpistHandler;
 
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                                 "measurements";
                         int duration = Toast.LENGTH_SHORT;
 
-                        Toast toast = Toast.makeText(context, message, duration);
+                        Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
                     });
                 }

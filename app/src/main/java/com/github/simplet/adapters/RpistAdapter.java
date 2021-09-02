@@ -15,16 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistItem> {
-    private final List<RpistNode> mRpistList;
-    private MainActivity mMainActivity;
+    private final List<RpistNode> rpistList;
+    private final MainActivity mainActivity;
 
     public RpistAdapter(MainActivity mainActivity, List<RpistNode> rpists) {
-        mMainActivity = mainActivity;
-        mRpistList = rpists;
-    }
-
-    public RpistAdapter(List<RpistNode> mRpistList) {
-        this.mRpistList = mRpistList;
+        this.mainActivity = mainActivity;
+        rpistList = rpists;
     }
 
     @NonNull
@@ -38,35 +34,35 @@ public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistItem> {
 
     @Override
     public void onBindViewHolder(@NonNull RpistAdapter.RpistItem listItemHolder, int i) {
-        RpistNode rpistNode = mRpistList.get(i);
+        RpistNode rpistNode = rpistList.get(i);
 
-        listItemHolder.mTemperature.setText(String.valueOf(rpistNode.getTemperature()));
-        listItemHolder.mUnits.setText(rpistNode.getTemperatureScale().symbol);
+        listItemHolder.temperature.setText(String.valueOf(rpistNode.getTemperature()));
+        listItemHolder.units.setText(rpistNode.getTemperatureScale().symbol);
     }
 
     @Override
     public int getItemCount() {
-        return mRpistList.size();
+        return rpistList.size();
     }
 
-    public void setRpistList ( List<RpistNode> rpists) {
-        mRpistList.clear();
-        mRpistList.addAll(rpists);
+    public void setRpistList(List<RpistNode> rpists) {
+        rpistList.clear();
+        rpistList.addAll(rpists);
 
         notifyDataSetChanged();
     }
 
     public class RpistItem extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView mTemperature;
-        TextView mRpistId;
-        TextView mUnits;
+        TextView temperature;
+        TextView rpistId;
+        TextView units;
 
         public RpistItem(@NonNull View itemView) {
             super(itemView);
 
-            mTemperature = itemView.findViewById(R.id.temperature);
-            mRpistId = itemView.findViewById(R.id.rpist_id);
-            mUnits = itemView.findViewById(R.id.units);
+            temperature = itemView.findViewById(R.id.temperature);
+            rpistId = itemView.findViewById(R.id.rpist_id);
+            units = itemView.findViewById(R.id.units);
         }
 
         @Override
