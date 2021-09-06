@@ -5,24 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:theme="@style/Theme.AppCompat.Light"
+    android:theme="@style/Theme.App"
     tools:context=".activities.MainActivity">
 
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/my_toolbar"
+        style="@style/Widget.App.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        />
+        android:elevation="4dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rpist_recycle_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"/>
 
 
 </LinearLayout>

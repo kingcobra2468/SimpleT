@@ -1,22 +1,30 @@
 <resources>
     <style name="Theme.App" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:statusBarColor">@color/black</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/police_blue</item>
+        <item name="android:statusBarColor">@color/police_blue</item>
+        <item name="colorAccent">@color/space_cadet</item>
         <item name="android:colorBackground">@color/background_material_light</item>
-        <item name="android:fontFamily">monospace</item>
+        <item name="fontFamily">@font/rubik</item>
         <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
+        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
     </style>
 
     <style name="Widget.App.CardView" parent="Widget.MaterialComponents.CardView">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Card</item>
-        <item name="backgroundColor">@color/colorPrimary</item>
-
+        <item name="cardBackgroundColor">@color/desert_sand</item>
+        <item name="cardElevation">2dp</item>
     </style>
 
     <style name="ThemeOverlay.App.Card" parent="">
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/desert_sand</item>
+    </style>
+
+    <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Toolbar" parent="">
+        <item name="colorPrimary">@color/police_blue</item>
     </style>
 
 </resources>

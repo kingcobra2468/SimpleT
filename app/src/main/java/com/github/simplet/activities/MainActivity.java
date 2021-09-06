@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         preferences.registerOnSharedPreferenceChangeListener(this);
 
         Toolbar myToolbar = findViewById(com.github.simplet.R.id.my_toolbar);
-        myToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         setSupportActionBar(myToolbar);
 
         recyclerView = findViewById(R.id.rpist_recycle_view);
