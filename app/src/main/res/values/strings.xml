@@ -3,8 +3,8 @@
     <string name="unit">Fahrenheit</string>
     <string name="api_mode">Public</string>
     <string-array name="scales">
-        <item>Fahrenheit</item>
         <item>Celsius</item>
+        <item>Fahrenheit</item>
         <item>Kelvin</item>
     </string-array>
     <string-array name="modes">
@@ -14,5 +14,10 @@
     <string-array name="modes_values">
         <item>node</item>
         <item>basestation</item>
+    </string-array>
+    <string-array name="scale_values">
+        <item>CELSIUS</item>
+        <item>FAHRENHEIT</item>
+        <item>KELVIN</item>
     </string-array>
 </resources>

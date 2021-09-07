@@ -12,12 +12,19 @@ public abstract class RpistClient {
     protected String secret;
     protected String baseUrl;
     protected boolean connected = false, connectionReset = true;
+    protected TemperatureScale scale = TemperatureScale.CELSIUS;
     protected RpistNodeService service;
     protected LinkedHashMap<String, RpistNode> rpists;
 
     public RpistClient(String address, int port) {
         baseUrl = String.format("%s:%d", address, port);
         rpists = new LinkedHashMap<>();
+    }
+
+    public RpistClient(String address, int port, TemperatureScale defaultScale) {
+        baseUrl = String.format("%s:%d", address, port);
+        rpists = new LinkedHashMap<>();
+        scale = defaultScale;
     }
 
     public RpistClient(String baseUrl) {

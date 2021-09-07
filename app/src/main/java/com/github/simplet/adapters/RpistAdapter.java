@@ -1,6 +1,5 @@
 package com.github.simplet.adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import com.github.simplet.activities.MainActivity;
 import com.github.simplet.utils.RpistNode;
 import com.github.simplet.utils.TemperatureScale;
 
-import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;

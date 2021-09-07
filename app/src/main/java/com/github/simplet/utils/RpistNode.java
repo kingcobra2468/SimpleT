@@ -39,23 +39,23 @@ public class RpistNode {
         return this;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public RpistNode setId(String id) {
         this.id = id;
 
         return this;
     }
 
+    public TemperatureScale getTemperatureScale() {
+        return temperatureScale;
+    }
+
     public RpistNode setTemperatureScale(TemperatureScale temperatureScale) {
         this.temperatureScale = temperatureScale;
 
         return this;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public TemperatureScale getTemperatureScale() {
-        return temperatureScale;
     }
 }

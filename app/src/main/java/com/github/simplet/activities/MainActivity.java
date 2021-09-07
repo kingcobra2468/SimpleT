@@ -16,9 +16,9 @@ import com.github.simplet.adapters.RpistAdapter;
 import com.github.simplet.models.rpist.RpistViewModel;
 import com.github.simplet.network.rpist.RpistClient;
 import com.github.simplet.network.rpist.RpistClientFactory;
-import com.github.simplet.network.rpist.RpistNodeClient;
 import com.github.simplet.network.rpist.RpistTempCallback;
 import com.github.simplet.utils.RpistNode;
+import com.github.simplet.utils.TemperatureScale;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         client = clientFactory.createClient(
                 preferences.getString("mode", "node"),
                 preferences.getString("rpist_hostname", "http://127.0.0.1"),
-                Integer.parseInt(preferences.getString("rpist_port", "8080"))
+                Integer.parseInt(preferences.getString("rpist_port", "8080")),
+                TemperatureScale.valueOf(preferences.getString("scale", "CELSIUS").toUpperCase())
         );
     }
 
@@ -112,7 +113,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 client = clientFactory.createClient(
                         preferences.getString("mode", "node"),
                         preferences.getString("rpist_hostname", "http://127.0.0.1"),
-                        Integer.parseInt(preferences.getString("rpist_port", "8080")));
+                        Integer.parseInt(preferences.getString("rpist_port", "8080")),
+                        TemperatureScale.valueOf(preferences.getString("scale", "CELSIUS").toUpperCase())
+                );
         }
     }
 

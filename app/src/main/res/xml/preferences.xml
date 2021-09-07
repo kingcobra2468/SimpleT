@@ -35,7 +35,6 @@
             app:title="RPIST serving mode"
             app:useSimpleSummaryProvider="true" />
 
-
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -50,11 +49,11 @@
             app:title="Temperature refresh rate(in seconds)"
             app:useSimpleSummaryProvider="true" />
         <ListPreference
-            android:defaultValue="celsius"
+            android:defaultValue="0"
             android:entries="@array/scales"
-            android:entryValues="@array/scales"
+            android:entryValues="@array/scale_values"
             app:key="scale"
-            app:title="Temperature scale"
+            app:title="Default temperature scale"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

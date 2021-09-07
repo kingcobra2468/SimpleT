@@ -26,6 +26,10 @@ public class RpistNodeClient extends RpistClient {
         super(address, port);
     }
 
+    public RpistNodeClient(String address, int port, TemperatureScale defaultScale) {
+        super(address, port, defaultScale);
+    }
+
     public RpistNodeClient(String baseUrl) {
         super(baseUrl);
     }
@@ -85,7 +89,9 @@ public class RpistNodeClient extends RpistClient {
         rpistId = response.body().getId();
 
         rpists.clear();
-        rpists.putIfAbsent(rpistId, new RpistNode().setId(rpistId));
+        rpists.putIfAbsent(rpistId, new RpistNode()
+                .setId(rpistId)
+                .setTemperatureScale(scale));
 
         return this;
     }
@@ -105,7 +111,9 @@ public class RpistNodeClient extends RpistClient {
                     return;
                 }
                 float temperature = response.body().getTemperature();
-                RpistNode node = rpists.getOrDefault(rpistId, new RpistNode().setId(rpistId));
+                RpistNode node = rpists.getOrDefault(rpistId, new RpistNode()
+                        .setId(rpistId)
+                        .setTemperatureScale(scale));
                 rpists.putIfAbsent(rpistId, node);
                 node.setTemperature(temperature);
 
