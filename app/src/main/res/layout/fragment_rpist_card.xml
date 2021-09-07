@@ -34,6 +34,7 @@
                 android:id="@+id/rpist_id"
                 android:layout_width="143dp"
                 android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
                 android:textSize="20sp" />
 
             <View

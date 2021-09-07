@@ -65,6 +65,7 @@ public class RpistNodeClient extends RpistClient {
         }
         jwt = response.body().getJwt();
         connected = true;
+        connectionReset = false;
 
         return this;
     }
@@ -81,6 +82,9 @@ public class RpistNodeClient extends RpistClient {
             throw new RpistErrorException(error.getCode(), error.getMessage());
         }
         rpistId = response.body().getId();
+
+        rpists.clear();
+        rpists.putIfAbsent(rpistId, new RpistNode().setId(rpistId));
 
         return this;
     }
@@ -100,7 +104,7 @@ public class RpistNodeClient extends RpistClient {
                     return;
                 }
                 float temperature = response.body().getTemperature();
-                RpistNode node = rpists.getOrDefault(rpistId, new RpistNode());
+                RpistNode node = rpists.getOrDefault(rpistId, new RpistNode().setId(rpistId));
                 rpists.putIfAbsent(rpistId, node);
                 node.setTemperature(temperature);
 

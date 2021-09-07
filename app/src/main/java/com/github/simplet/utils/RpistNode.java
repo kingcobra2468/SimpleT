@@ -3,14 +3,16 @@ package com.github.simplet.utils;
 public class RpistNode {
     private float temperature;
     private TemperatureScale temperatureScale;
+    private String id;
 
     public RpistNode() {
         temperature = -99;
         temperatureScale = TemperatureScale.CELSIUS;
     }
 
-    public RpistNode(float temperature, TemperatureScale scale) {
+    public RpistNode(float temperature, TemperatureScale scale, String id) {
         this.temperature = temperature;
+        this.id = id;
         temperatureScale = scale;
     }
 
@@ -31,15 +33,29 @@ public class RpistNode {
         return adaptedTemperature;
     }
 
-    public void setTemperature(float temperature) {
+    public RpistNode setTemperature(float temperature) {
         this.temperature = temperature;
+
+        return this;
+    }
+
+    public RpistNode setId(String id) {
+        this.id = id;
+
+        return this;
+    }
+
+    public RpistNode setTemperatureScale(TemperatureScale temperatureScale) {
+        this.temperatureScale = temperatureScale;
+
+        return this;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public TemperatureScale getTemperatureScale() {
         return temperatureScale;
-    }
-
-    public void setTemperatureScale(TemperatureScale temperatureScale) {
-        this.temperatureScale = temperatureScale;
     }
 }

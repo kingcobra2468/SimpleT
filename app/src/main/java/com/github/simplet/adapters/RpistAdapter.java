@@ -41,6 +41,7 @@ public class RpistAdapter extends RecyclerView.Adapter<RpistAdapter.RpistItem> {
 
         listItemHolder.temperature.setText(String.format("%.2f", rpistNode.getTemperature()));
         listItemHolder.units.setText(rpistNode.getTemperatureScale().symbol);
+        listItemHolder.rpistId.setText(rpistNode.getId());
 
         listItemHolder.itemView.setOnClickListener(view -> {
             RpistNode node = rpistList.get(listItemHolder.getAdapterPosition());
