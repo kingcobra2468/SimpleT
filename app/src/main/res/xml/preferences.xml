@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
         app:key="authentication_category"
-        app:title="Authentication"
-        app:useSimpleSummaryProvider="true">
+        app:title="Authentication">
 
         <EditTextPreference
+            android:defaultValue=""
             app:key="auth_secret"
             app:title="Authentication secret"
             app:useSimpleSummaryProvider="true" />
@@ -18,18 +18,21 @@
         app:title="RPIST">
 
         <EditTextPreference
+            android:defaultValue="http://127.0.0.1"
             app:key="rpist_hostname"
             app:title="Node host name"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            android:defaultValue="8080"
             app:key="rpist_port"
             app:title="Node port"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true" />
         <ListPreference
+            android:defaultValue="Node"
+            android:entries="@array/modes"
+            android:entryValues="@array/modes_values"
             app:key="mode"
             app:title="RPIST serving mode"
-            android:entries="@array/modes"
-            android:entryValues="@array/modes"
             app:useSimpleSummaryProvider="true" />
 
 
@@ -40,17 +43,19 @@
         app:title="Other">
 
         <EditTextPreference
-            app:key="refresh_rate"
+            android:defaultValue="3"
             android:digits="0123456789"
             android:inputType="numberDecimal"
+            app:key="refresh_rate"
             app:title="Temperature refresh rate(in seconds)"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true" />
         <ListPreference
-            app:key="scale"
-            app:title="Temperature scale"
+            android:defaultValue="celsius"
             android:entries="@array/scales"
             android:entryValues="@array/scales"
-            app:useSimpleSummaryProvider="true"/>
+            app:key="scale"
+            app:title="Temperature scale"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

@@ -57,4 +57,8 @@ public abstract class RpistClient {
     public abstract List<RpistNode> getRpistNodes();
 
     public abstract void setNodeScale(String rpistId, TemperatureScale scale);
+
+    public abstract RpistClient fetchRpistId() throws IOException;
+
+    public abstract void getCelsius(RpistTempCallback callback);
 }

@@ -31,7 +31,7 @@ public class RpistNodeClient extends RpistClient {
     }
 
     @Override
-    protected RpistNodeClient setup() {
+    protected RpistClient setup() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(this.baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -50,7 +50,8 @@ public class RpistNodeClient extends RpistClient {
     public void setNodeScale(String rpistId, TemperatureScale scale) {
     }
 
-    public RpistNodeClient connect(String secret) throws IOException {
+    @Override
+    public RpistClient connect(String secret) throws IOException {
         super.connect(secret);
 
         Call<AuthResult> call = service.getJwt(new AuthRequest(this.secret));
@@ -70,7 +71,7 @@ public class RpistNodeClient extends RpistClient {
         return this;
     }
 
-    public RpistNodeClient fetchRpistId() throws IOException {
+    public RpistClient fetchRpistId() throws IOException {
         Call<InfoResult> call = service.getInfo();
 
         Response<InfoResult> response = call.execute();
@@ -108,7 +109,7 @@ public class RpistNodeClient extends RpistClient {
                 rpists.putIfAbsent(rpistId, node);
                 node.setTemperature(temperature);
 
-                callback.onSuccess(temperature);
+                callback.onSuccess();
             }
 
             @Override

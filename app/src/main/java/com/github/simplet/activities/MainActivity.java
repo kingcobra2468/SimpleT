@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.github.simplet.R;
 import com.github.simplet.adapters.RpistAdapter;
 import com.github.simplet.models.rpist.RpistViewModel;
+import com.github.simplet.network.rpist.RpistClient;
+import com.github.simplet.network.rpist.RpistClientFactory;
 import com.github.simplet.network.rpist.RpistNodeClient;
 import com.github.simplet.network.rpist.RpistTempCallback;
 import com.github.simplet.utils.RpistNode;
@@ -35,16 +37,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private final List<RpistNode> mRpistList = new ArrayList<>();/* = new ArrayList<>(Arrays.asList(
-            new RpistNode(70, TemperatureScale.CELSIUS),
-            new RpistNode(20, TemperatureScale.CELSIUS),
-            new RpistNode(40, TemperatureScale.FAHRENHEIT)
-    ));*/
+    private final List<RpistNode> mRpistList = new ArrayList<>();
     private RecyclerView recyclerView;
     private RpistAdapter rpistAdapter;
     private RpistViewModel rpistViewModel;
-    private RpistNodeClient client;
     private SharedPreferences preferences;
+    private RpistClientFactory clientFactory;
+    private RpistClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +70,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         rpistViewModel.getRpists().observe(this,
                 rpistNodes -> rpistAdapter.setRpistList(rpistNodes));
 
-        client = new RpistNodeClient(preferences.getString("rpist_hostname", "http://127.0.0.1"),
+        clientFactory = new RpistClientFactory();
+        client = clientFactory.createClient(
+                preferences.getString("mode", "node"),
+                preferences.getString("rpist_hostname", "http://127.0.0.1"),
                 Integer.parseInt(preferences.getString("rpist_port", "8080"))
         );
     }
@@ -106,6 +108,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 client.resetConnection();
 
                 break;
+            case "mode":
+                client = clientFactory.createClient(
+                        preferences.getString("mode", "node"),
+                        preferences.getString("rpist_hostname", "http://127.0.0.1"),
+                        Integer.parseInt(preferences.getString("rpist_port", "8080")));
         }
     }
 
@@ -182,8 +189,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             client.getCelsius(new RpistTempCallback() {
 
                 @Override
-                public void onSuccess(float temperature) {
-                    rpistViewModel.getRpists().setValue(client.getRpistNodes());
+                public void onSuccess() {
+                    uiHandler.post(() -> {
+                        rpistViewModel.getRpists().setValue(client.getRpistNodes());
+                    });
                 }
 
                 @Override

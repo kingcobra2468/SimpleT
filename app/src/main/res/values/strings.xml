@@ -11,4 +11,8 @@
         <item>Node</item>
         <item>Base Station</item>
     </string-array>
+    <string-array name="modes_values">
+        <item>node</item>
+        <item>basestation</item>
+    </string-array>
 </resources>
