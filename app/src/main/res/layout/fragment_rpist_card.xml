@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:cardCornerRadius="6dp"
-        app:cardElevation="10dp"
+        app:cardElevation="5dp"
         app:cardPreventCornerOverlap="false">
 
         <LinearLayout
@@ -26,6 +26,7 @@
                 android:id="@+id/rpi_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/robotocondensed_bold"
                 android:text="RPI:"
                 android:textSize="20sp" />
 
@@ -33,14 +34,7 @@
                 android:id="@+id/rpist_id"
                 android:layout_width="143dp"
                 android:layout_height="wrap_content"
-                android:text="TextView"
                 android:textSize="20sp" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="40dp"
-                android:background="@android:color/darker_gray" />
 
             <TextView
                 android:id="@+id/temperature"
@@ -55,8 +49,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/roboto_bold"
                 android:text="F"
                 android:textSize="20sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="40dp"
+                android:background="@android:color/darker_gray" />
 
         </LinearLayout>
 

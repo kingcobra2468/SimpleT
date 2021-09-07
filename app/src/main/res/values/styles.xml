@@ -4,9 +4,10 @@
         <item name="android:statusBarColor">@color/police_blue</item>
         <item name="colorAccent">@color/space_cadet</item>
         <item name="android:colorBackground">@color/background_material_light</item>
-        <item name="fontFamily">@font/rubik</item>
         <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
     <style name="Widget.App.CardView" parent="Widget.MaterialComponents.CardView">
@@ -17,6 +18,7 @@
 
     <style name="ThemeOverlay.App.Card" parent="">
         <item name="colorPrimary">@color/desert_sand</item>
+        <item name="background">@color/desert_sand</item>
     </style>
 
     <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
@@ -25,6 +27,10 @@
 
     <style name="ThemeOverlay.App.Toolbar" parent="">
         <item name="colorPrimary">@color/police_blue</item>
+        <item name="android:elevation">8dp</item>
     </style>
 
+    <style name="Widget.App.CardView.Background" parent="">
+        <item name="backgroundColor">@color/police_blue</item>
+    </style>
 </resources>
