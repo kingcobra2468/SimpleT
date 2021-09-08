@@ -36,6 +36,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Main activity responsible for displaying temperature readings.
+ */
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private final List<RpistNode> mRpistList = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -55,9 +58,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         preferences.registerOnSharedPreferenceChangeListener(this);
 
+        // setup toolbar
         Toolbar myToolbar = findViewById(com.github.simplet.R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        // setup recycleview and listeners
         recyclerView = findViewById(R.id.rpist_recycle_view);
         rpistAdapter = new RpistAdapter(this, mRpistList);
         RecyclerView.LayoutManager mLayoutManager =
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         rpistViewModel.getRpists().observe(this,
                 rpistNodes -> rpistAdapter.setRpistList(rpistNodes));
 
+        // initialize rpist client
         clientFactory = new RpistClientFactory();
         client = clientFactory.createClient(
                 preferences.getString("mode", "node"),
@@ -124,6 +130,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         private ExecutorService executor;
         private Handler uiHandler, rpistHandler;
 
+        /**
+         * Creates the background thread executor for running background threads.
+         */
         @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
         void create() {
             executor = Executors.newSingleThreadExecutor(r -> {
@@ -133,6 +142,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             });
         }
 
+        /**
+         * Start background thread and periodically get temperature readings.
+         */
         @OnLifecycleEvent(Lifecycle.Event.ON_START)
         void start() {
             ht = new HandlerThread("temperatureRefresh");
@@ -144,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             executor.execute(new RpistRefreshRunnable(uiHandler, rpistHandler));
         }
 
+        /**
+         * Stop temperature refresh to save system resources.
+         */
         @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
         void stop() {
             ht.quitSafely();
@@ -152,10 +167,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
+    /**
+     * Runnable for periodically fetching latest data from rpist.
+     */
     private class RpistRefreshRunnable implements Runnable {
         private final Handler uiHandler;
         private final Handler rpistHandler;
 
+        /**
+         * Instantiates a new Rpist refresh runnable.
+         *
+         * @param uiHandler    the ui thread handler
+         * @param rpistHandler the rpist background thread handler
+         */
         public RpistRefreshRunnable(Handler uiHandler, Handler rpistHandler) {
             this.uiHandler = uiHandler;
             this.rpistHandler = rpistHandler;
@@ -163,11 +187,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         @Override
         public void run() {
-
+            // attempt to reconnect to rpist if connection reset
             if (client.isConnectionReset()) {
                 Log.i("RPIST", "Attempting to connect");
 
                 try {
+                    // try to connect to the rpist
                     client.connect(preferences.getString("auth_secret", ""))
                             .fetchRpistId();
                     Log.i("RPIST", "Connection success");
@@ -184,6 +209,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     });
                 }
             }
+            // if connection is not active, then it is likely that the rpist is down. Stop polling
+            // to save battery life.
             if (!client.isConnected()) {
                 Log.i("RPIST", "Connection failure");
                 return;
@@ -194,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 @Override
                 public void onSuccess() {
                     uiHandler.post(() -> {
+                        // update the view model with the new rpist node values
                         rpistViewModel.getRpists().setValue(client.getRpistNodes());
                     });
                 }
@@ -212,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 }
             });
 
+            // periodically fetch the temperature again
             rpistHandler.postDelayed(this, Integer.parseInt(preferences.getString("refresh_rate",
                     "5000")));
         }

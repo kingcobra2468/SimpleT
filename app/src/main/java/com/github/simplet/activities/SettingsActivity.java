@@ -11,6 +11,9 @@ import com.github.simplet.R;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+/**
+ * Settings activity responsible for managing preferences.
+ */
 public class SettingsActivity extends AppCompatActivity implements AdapterView
         .OnItemSelectedListener {
     @Override
@@ -18,6 +21,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(com.github.simplet.R.layout.activity_settings);
 
+        // setup toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }

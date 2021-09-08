@@ -7,19 +7,40 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Client for when the rpist is operated as a base station.
+ */
 // TODO: implement once base station microservice is implemented. For now call setFakeNodes
 public class RpistBaseStationClient extends RpistClient {
 
+    /**
+     * Instantiates a new rpist base station client.
+     *
+     * @param address the address of the rpist
+     * @param port    the port of the rpist
+     */
     public RpistBaseStationClient(String address, int port) {
         super(address, port);
         setFakeNodes();
     }
 
+    /**
+     * Instantiates a new rpist base station client.
+     *
+     * @param address      the address of the rpist
+     * @param port         the port of the rpist
+     * @param defaultScale the default temperature scale for the nodes
+     */
     public RpistBaseStationClient(String address, int port, TemperatureScale defaultScale) {
         super(address, port, defaultScale);
         setFakeNodes();
     }
 
+    /**
+     * Instantiates a new rpist base station client.
+     *
+     * @param baseUrl the base url of the rpist
+     */
     public RpistBaseStationClient(String baseUrl) {
         super(baseUrl);
 
@@ -57,6 +78,10 @@ public class RpistBaseStationClient extends RpistClient {
         callback.onSuccess();
     }
 
+    /**
+     * Generate fake data for when node is operated in base station mode until the client
+     * is fully implemented.
+     */
     private void setFakeNodes() {
         rpists.putIfAbsent("Room 1", new RpistNode(70, scale, "Room 1"));
         rpists.putIfAbsent("Room 2", new RpistNode(40, scale, "Room 2"));

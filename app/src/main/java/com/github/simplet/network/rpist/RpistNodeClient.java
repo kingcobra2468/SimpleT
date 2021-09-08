@@ -21,6 +21,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RpistNodeClient extends RpistClient {
     protected String rpistId;
+    /**
+     * The Service.
+     */
+    protected RpistNodeService service;
 
     public RpistNodeClient(String address, int port) {
         super(address, port);
