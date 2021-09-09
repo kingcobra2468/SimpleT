@@ -83,9 +83,9 @@ public class RpistBaseStationClient extends RpistClient {
      * is fully implemented.
      */
     private void setFakeNodes() {
-        rpists.putIfAbsent("Room 1", new RpistNode(70, scale, "Room 1"));
-        rpists.putIfAbsent("Room 2", new RpistNode(40, scale, "Room 2"));
-        rpists.putIfAbsent("Room 3", new RpistNode(50, scale, "Room 3"));
+        rpists.putIfAbsent("bedroom 1", new RpistNode(70, scale, "bedroom 1"));
+        rpists.putIfAbsent("bedroom 2", new RpistNode(40, scale, "bedroom 2"));
+        rpists.putIfAbsent("kitchen", new RpistNode(50, scale, "kitchen"));
 
         connected = true;
         connectionReset = false;
