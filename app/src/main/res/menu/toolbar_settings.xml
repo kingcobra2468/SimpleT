@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/back_button"
-        android:icon="@drawable/back"
-        android:title="Test"
-        app:showAsAction="ifRoom"/>
+        android:icon="@drawable/back_arrow_white"
+        android:title="Back"
+        app:showAsAction="ifRoom" />
 
 </menu>

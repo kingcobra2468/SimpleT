@@ -1,10 +1,23 @@
 <resources>
-    <string name="app_name">Thermometer</string>
-    <string name="username"></string>
-    <string name="password"></string>
-    <string name="api_url"></string>
-    <string name="rasp_pi_hash"></string>
+    <string name="app_name">SimpleT</string>
     <string name="unit">Fahrenheit</string>
     <string name="api_mode">Public</string>
-
+    <string-array name="scales">
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+        <item>Kelvin</item>
+    </string-array>
+    <string-array name="modes">
+        <item>Node</item>
+        <item>Base Station</item>
+    </string-array>
+    <string-array name="modes_values">
+        <item>node</item>
+        <item>basestation</item>
+    </string-array>
+    <string-array name="scale_values">
+        <item>CELSIUS</item>
+        <item>FAHRENHEIT</item>
+        <item>KELVIN</item>
+    </string-array>
 </resources>

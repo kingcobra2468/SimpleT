@@ -1,157 +1,248 @@
 package com.github.simplet.activities;
 
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.github.simplet.network.APIRequest;
-import com.github.simplet.utils.LocalStorage;
+import com.github.simplet.R;
+import com.github.simplet.adapters.RpistAdapter;
+import com.github.simplet.models.rpist.RpistViewModel;
+import com.github.simplet.network.rpist.RpistClient;
+import com.github.simplet.network.rpist.RpistClientFactory;
+import com.github.simplet.network.rpist.RpistTempCallback;
+import com.github.simplet.utils.RpistNode;
+import com.github.simplet.utils.TemperatureScale;
 
-import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-// TODO: add support so it stops and resume when page is not on top of stack
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class MainActivity extends AppCompatActivity {
-
-    private TextView myTextView;
-    private LocalStorage localStorage;
-    private AsyncTask temp_refresh;
+/**
+ * Main activity responsible for displaying temperature readings.
+ */
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private final List<RpistNode> mRpistList = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private RpistAdapter rpistAdapter;
+    private RpistViewModel rpistViewModel;
+    private SharedPreferences preferences;
+    private RpistClientFactory clientFactory;
+    private RpistClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(com.github.simplet.R.layout.activity_main);
-        LocalStorage.setContext(this);
+        setContentView(R.layout.activity_main);
 
-        myTextView = findViewById(com.github.simplet.R.id.temp);
+        getLifecycle().addObserver(new RpistRefreshObserver());
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.registerOnSharedPreferenceChangeListener(this);
+
+        // setup toolbar
         Toolbar myToolbar = findViewById(com.github.simplet.R.id.my_toolbar);
-        myToolbar.setBackgroundColor(getResources().getColor(com.github.simplet.R.color
-                .colorPrimary));
         setSupportActionBar(myToolbar);
+
+        // setup recycleview and listeners
+        recyclerView = findViewById(R.id.rpist_recycle_view);
+        rpistAdapter = new RpistAdapter(this, mRpistList);
+        RecyclerView.LayoutManager mLayoutManager =
+                new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(rpistAdapter);
+
+        rpistViewModel = new ViewModelProvider(this).get(RpistViewModel.class);
+        rpistViewModel.getRpists().observe(this,
+                rpistNodes -> rpistAdapter.setRpistList(rpistNodes));
+
+        // initialize rpist client
+        clientFactory = new RpistClientFactory();
+        client = clientFactory.createClient(
+                preferences.getString("mode", "node"),
+                preferences.getString("rpist_hostname", "http://127.0.0.1"),
+                Integer.parseInt(preferences.getString("rpist_port", "8080")),
+                TemperatureScale.valueOf(preferences.getString("scale", "CELSIUS").toUpperCase())
+        );
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(com.github.simplet.R.menu.header_home, menu);
+        getMenuInflater().inflate(R.menu.toolbar_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case com.github.simplet.R.id.action_favorite:
+            case com.github.simplet.R.id.settings_icon:
                 Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                //myIntent.putExtra("key", value); //Optional parameters
                 MainActivity.this.startActivity(myIntent);
+
                 return true;
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        switch (key) {
+            case "rpist_hostname":
+            case "rpist_port":
+            case "auth_secret":
+                client.setBaseUrl(preferences.getString("rpist_hostname", "http://127.0.0.1"),
+                        Integer.parseInt(preferences.getString("rpist_port", "8080")));
+                client.resetConnection();
 
-        temp_refresh = new MyTask().execute();
+                break;
+            case "mode":
+                client = clientFactory.createClient(
+                        preferences.getString("mode", "node"),
+                        preferences.getString("rpist_hostname", "http://127.0.0.1"),
+                        Integer.parseInt(preferences.getString("rpist_port", "8080")),
+                        TemperatureScale.valueOf(preferences.getString("scale", "CELSIUS").toUpperCase())
+                );
+        }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
+    private class RpistRefreshObserver implements LifecycleObserver {
+        private HandlerThread ht;
+        private ExecutorService executor;
+        private Handler uiHandler, rpistHandler;
 
-        temp_refresh.cancel(true);
+        /**
+         * Creates the background thread executor for running background threads.
+         */
+        @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        void create() {
+            executor = Executors.newSingleThreadExecutor(r -> {
+                Thread thread = new Thread(r);
+                thread.setDaemon(true);
+                return thread;
+            });
+        }
+
+        /**
+         * Start background thread and periodically get temperature readings.
+         */
+        @OnLifecycleEvent(Lifecycle.Event.ON_START)
+        void start() {
+            ht = new HandlerThread("temperatureRefresh");
+            ht.start();
+
+            uiHandler = new Handler();
+            rpistHandler = new Handler(ht.getLooper());
+
+            executor.execute(new RpistRefreshRunnable(uiHandler, rpistHandler));
+        }
+
+        /**
+         * Stop temperature refresh to save system resources.
+         */
+        @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+        void stop() {
+            ht.quitSafely();
+            uiHandler.removeCallbacksAndMessages(null);
+            rpistHandler.removeCallbacksAndMessages(null);
+        }
     }
 
-    private class MyTask extends AsyncTask<String, String, String> {
-        private APIRequest api_request = new APIRequest();
-        private String username, password, apiUrl, units, raspHash, apiMode;
-        private int refreshSec;
+    /**
+     * Runnable for periodically fetching latest data from rpist.
+     */
+    private class RpistRefreshRunnable implements Runnable {
+        private final Handler uiHandler;
+        private final Handler rpistHandler;
 
-        private void getLatestData() {
-            this.username = LocalStorage.getString(com.github.simplet.R.string.username, "");
-            this.password = LocalStorage.getString(com.github.simplet.R.string.password, "");
-            this.apiUrl = LocalStorage.getString(com.github.simplet.R.string.api_url,
-                    "http:127.0.1.1/");
-            this.units = LocalStorage.getString(com.github.simplet.R.string.unit, "celcius");
-            this.refreshSec = LocalStorage.getInt(com.github.simplet.R.integer.refresh, 5);
-            this.raspHash = LocalStorage.getString(com.github.simplet.R.string.rasp_pi_hash, "");
-            this.apiMode = LocalStorage.getString(com.github.simplet.R.string.api_mode, "Public");
-
-            if (this.api_request.getBaseUrl() != this.apiUrl) {
-                this.api_request.setUrl(this.apiUrl);
-            }
-
-            //Update each time or do a check. Check might be slower
-            this.api_request.setUsername(this.username);
-            this.api_request.setPassword(this.password);
+        /**
+         * Instantiates a new Rpist refresh runnable.
+         *
+         * @param uiHandler    the ui thread handler
+         * @param rpistHandler the rpist background thread handler
+         */
+        public RpistRefreshRunnable(Handler uiHandler, Handler rpistHandler) {
+            this.uiHandler = uiHandler;
+            this.rpistHandler = rpistHandler;
         }
 
         @Override
-        protected void onPreExecute() {
-        }
+        public void run() {
+            // attempt to reconnect to rpist if connection reset
+            if (client.isConnectionReset()) {
+                Log.i("RPIST", "Attempting to connect");
 
-        @Override
-        protected String doInBackground(String... params) {
-            String apiCall = "";
-            try {
+                try {
+                    // try to connect to the rpist
+                    client.connect(preferences.getString("auth_secret", ""))
+                            .fetchRpistId();
+                    Log.i("RPIST", "Connection success");
+                } catch (Exception e) {
+                    Log.e("RPIST", e.toString());
+                    uiHandler.post(() -> {
+                        Context context = getApplicationContext();
+                        CharSequence text = "Failed to connect to RPIST node or base";
+                        int duration = Toast.LENGTH_SHORT;
 
-                MyTask.this.getLatestData();
-
-                while (!isCancelled()) {
-
-                    if (this.apiMode.equalsIgnoreCase("public")) {
-                        apiCall = "temperature/" + this.units.toLowerCase();
-                    } else if (this.apiMode.equalsIgnoreCase("private")) {
-                        apiCall = "temp/get-temperature/" + this.raspHash + "/" + this.units
-                                .toLowerCase();
-                    }
-
-                    try {
-                        JSONObject responseData = (JSONObject) this.api_request.sendRequest
-                                ("GET", apiCall, null, false);
-                        Double temperature = responseData.getDouble("temperature");
-                        String units = responseData.getString("unit");
-                        publishProgress(temperature.toString() + " " + units);
-                        Thread.sleep(refreshSec * 1000);
-                    } catch (Exception e) {
-
-                        if (e.getMessage().equalsIgnoreCase("")) {
-                            publishProgress("REQUEST ERROR");
-                        } else {
-                            publishProgress(e.getMessage());
-                        }
-                        Thread.sleep(5000);
-
-                    }
-
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                        return;
+                    });
                 }
-            } catch (Exception e) {
-                publishProgress("ERROR");
-
+            }
+            // if connection is not active, then it is likely that the rpist is down. Stop polling
+            // to save battery life.
+            if (!client.isConnected()) {
+                Log.i("RPIST", "Connection failure");
+                return;
             }
 
-            return "done";
-        }
+            client.getCelsius(new RpistTempCallback() {
 
-        @Override
-        protected void onProgressUpdate(String... values) {
-            myTextView.setText(values[0]);
-        }
+                @Override
+                public void onSuccess() {
+                    uiHandler.post(() -> {
+                        // update the view model with the new rpist node values
+                        rpistViewModel.getRpists().setValue(client.getRpistNodes());
+                    });
+                }
 
-        @Override
-        protected void onPostExecute(String result) {
-            myTextView.setText(result);
+                @Override
+                public void onError(String code, String message) {
+                    uiHandler.post(() -> {
+                        Context context = getApplicationContext();
+                        CharSequence text = "Error occurred when trying to get newest " +
+                                "measurements";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                    });
+                }
+            });
+
+            // periodically fetch the temperature again
+            rpistHandler.postDelayed(this, Integer.parseInt(preferences.getString("refresh_rate",
+                    "5000")));
         }
     }
 }

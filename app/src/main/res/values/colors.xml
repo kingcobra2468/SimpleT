@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#70a9c2</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#000000</color>
-    <color name="background_material_light">#e0e0e0</color>
+    <color name="dark_purple">#200D3A</color>
+    <color name="space_cadet">#292651</color>
+    <color name="police_blue">#2E4770</color>
+    <color name="cinnamon_satin">#CE5E82</color>
+    <color name="tumbleweed">#ECA089</color>
+    <color name="desert_sand">#ECC6A2</color>
 </resources>
