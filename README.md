@@ -9,8 +9,8 @@ Depending on the selected mode, the home activity will either display a single n
 or all of the nodes recorded by the base station.
 
 <p align="center">
-  <img src="./screenshots/home_node_page.png" width="250px"/>
-  <img src="./screenshots/home_basestation_page.png" width="250px"/>
+  <kbd><img src="./screenshots/home_node_page.png" width="250px"/></kbd>
+  <kbd><img src="./screenshots/home_basestation_page.png" width="250px"/></kbd>
 </p>
 
 Upon opening the app, the temperature scale will be the same one that was set in
@@ -24,7 +24,7 @@ planned feature.*
 The settings activity allows the user to specifiy different preferences for the application. These allow for modifications of the scale, refresh, among other RPIST profiles.
 
 <p align="center">
-  <img src="./screenshots/settings_page.png" width="250px"/>
+  <kbd><img src="./screenshots/settings_page.png" width="250px"/></kbd>
 </p>
 
 The list of all settings is as follows:
