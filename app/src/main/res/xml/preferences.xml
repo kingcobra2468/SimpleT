@@ -42,11 +42,11 @@
         app:title="Other">
 
         <EditTextPreference
-            android:defaultValue="3"
+            android:defaultValue="3000"
             android:digits="0123456789"
             android:inputType="numberDecimal"
             app:key="refresh_rate"
-            app:title="Temperature refresh rate(in seconds)"
+            app:title="Temperature refresh rate(in milliseconds)"
             app:useSimpleSummaryProvider="true" />
         <ListPreference
             android:defaultValue="0"
