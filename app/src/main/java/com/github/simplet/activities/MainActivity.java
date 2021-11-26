@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 preferences.getString("mode", "node"),
                 preferences.getString("rpist_hostname", "http://127.0.0.1"),
                 Integer.parseInt(preferences.getString("rpist_port", "8080")),
-                TemperatureScale.valueOf(preferences.getString("scale", "CELSIUS").toUpperCase())
+                TemperatureScale.valueOf(preferences.getString("rpist_scale", "CELSIUS").toUpperCase())
         );
     }
 
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         preferences.getString("mode", "node"),
                         preferences.getString("rpist_hostname", "http://127.0.0.1"),
                         Integer.parseInt(preferences.getString("rpist_port", "8080")),
-                        TemperatureScale.valueOf(preferences.getString("scale", "CELSIUS").toUpperCase())
+                        TemperatureScale.valueOf(preferences.getString("rpist_scale", "CELSIUS").toUpperCase())
                 );
         }
     }
